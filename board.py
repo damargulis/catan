@@ -40,6 +40,8 @@ class Board(object):
                 continue
         self.settlements = []
         self.roads = []
+        self.d_cards = self._get_d_cards()
+        shuffle(self.d_cards)
 
     def _get_tiles(self):
         tiles = []
@@ -64,6 +66,15 @@ class Board(object):
 
     def _get_chits(self):
         return [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11]
+
+    def _get_d_cards(self):
+        return (
+                ['knight'] * 14 
+                + ['point'] * 5 
+                + ['monopoly'] * 2 
+                + ['road_builder'] * 2 
+                + ['monopoly'] * 2
+        )
 
 if __name__ == '__main__':
     board = Board()
