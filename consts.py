@@ -21,7 +21,14 @@ PlayerColors = {
         4: (0, 0, 255)
 }
 
-CENTER = (300,300)
+PLAYER_POSITIONS = [
+        (0,0,150,150),
+        (500,0,150,150),
+        (0,440,150,150),
+        (500,440,150,150),
+]
+
+CENTER = (320,295)
 RESOURCE_RADIUS = 50
 
 TilePositions = {
