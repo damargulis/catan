@@ -4,14 +4,10 @@ import pygame
 from math import sin, cos
 
 RESOURCE_RADUIS = consts.RESOURCE_RADIUS
-PLAYER_POSITIONS = [
-        (0,0,150,150),
-        (500,0,150,150),
-        (0,440,150,150),
-        (500,440,150,150),
-]
+PLAYER_POSITIONS = consts.PLAYER_POSITIONS
 
 black = 0,0,0
+white = 255,255,255
 
 def draw_resource_tile(surface, tile):
     pi2 = 2 * 3.14
@@ -31,8 +27,7 @@ def draw_resource_tile(surface, tile):
     )
     myfont = pygame.font.SysFont("monospace", 15)
     if tile.chit:
-        label = myfont.render(str(tile.chit), 1, (0,0,0))
-        surface.blit(label, tile.location)
+        print_text(surface, str(tile.chit), tile.location, black)
 
 def draw_settlement(surface, settlement):
     size = 20 if settlement.city else 10
@@ -60,48 +55,60 @@ def print_board(screen, board):
     for road in board.roads:
         draw_road(screen, road)
 
+def print_text(screen, text, position, color=white):
+    myfont = pygame.font.SysFont("monospace", 15)
+    label = myfont.render(text, 1, color)
+    screen.blit(label, position)
+
 def print_player(screen, player):
     position = PLAYER_POSITIONS[player.number - 1]
     pygame.draw.rect(screen, (255,255,255), position, 5)
-    text = 'Player ' + str(player.number)
-    myfont = pygame.font.SysFont("monospace", 15)
-    label = myfont.render(
-            text,
-            1,
-            player.color
+    print_text(
+            screen, 
+            'Player ' + str(player.number), 
+            (position[0] + 30, position[1] + 5),
+            player.color, 
     )
-    screen.blit(label, (position[0] + 30, position[1] + 5))
-    text = 'Points: ' + str(player.points)
-    label = myfont.render(
-            text,
-            1,
-            (255,255,255)
+    print_text(
+            screen,
+            'Points: ' + str(player.points),
+            (position[0] + 10, position[1] + 20),
     )
-    screen.blit(label, (position[0] + 10, position[1] + 20))
-    #text = 'Resources: ' + str(sum([player.hand[resource] for resource in player.hand]))
-    #label = myfont.render(text, 1, (255,255,255))
-    #screen.blit(label, (position[0] + 10, position[1] + 35))
-    text = 'Brick: ' + str(player.hand[consts.Resource.BRICK])
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 35))
-    text = 'Grain: ' + str(player.hand[consts.Resource.GRAIN])
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 50))
-    text = 'Lumber: ' + str(player.hand[consts.Resource.LUMBER])
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 65))
-    text = 'Ore: ' + str(player.hand[consts.Resource.ORE])
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 80))
-    text = 'Wool: ' + str(player.hand[consts.Resource.WOOL])
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 95))
-    text = 'Dev Cards: ' + str(len(player.d_cards))
-    label = myfont.render(text, 1, (255, 255, 255))
-    screen.blit(label, (position[0] + 10, position[1]  + 110))
-    text = 'Knights: ' + str(player.knights)
-    label = myfont.render(text, 1, (255,255,255))
-    screen.blit(label, (position[0] + 10, position[1] + 125))
+    print_text(
+            screen,
+            'Brick: ' + str(player.hand[consts.Resource.BRICK]),
+            (position[0] + 10, position[1] + 35),
+    )
+    print_text(
+            screen,
+            'Grain: ' + str(player.hand[consts.Resource.GRAIN]),
+            (position[0] + 10, position[1] + 50),
+    )
+    print_text(
+            screen,
+            'Lumber: ' + str(player.hand[consts.Resource.LUMBER]),
+            (position[0] + 10, position[1] + 65),
+    )
+    print_text(
+            screen,
+            'Ore: ' + str(player.hand[consts.Resource.ORE]),
+            (position[0] + 10, position[1] + 80)
+    )
+    print_text(
+            screen,
+            'Wool: ' + str(player.hand[consts.Resource.WOOL]),
+            (position[0] + 10, position[1] + 95)
+    )
+    print_text(
+            screen,
+            'Dev Cards: ' + str(len(player.d_cards)),
+            (position[0] + 10, position[1] + 110)
+    )
+    print_text(
+            screen,
+            'Knights: ' + str(player.knights),
+            (position[0] + 10, position[1] + 125)
+    )
 
 def print_screen(screen, board, text, players, buttons=[]):
     screen.fill(black)
@@ -109,13 +116,7 @@ def print_screen(screen, board, text, players, buttons=[]):
     for player in players:
         print_player(screen, player)
     pygame.draw.rect(screen, (255,255,255), (0,590,640,50), 5)
-    myfont = pygame.font.SysFont("monospace", 15)
-    label = myfont.render(
-            text,
-            1,
-            (255,255,255)
-    )
-    screen.blit(label, (20, 600))
+    print_text(screen, text, (20,600))
     print_buttons(screen, buttons)
     pygame.display.flip()
 
@@ -123,9 +124,7 @@ def print_buttons(screen, buttons):
     start = 200
     for button in buttons:
         pygame.draw.rect(screen, (255,255,255), (start, 605, 150, 20), 2)
-        myfont = pygame.font.SysFont("monospace", 15)
-        label = myfont.render(button['label'], 1, (255,255,255))
-        screen.blit(label, (start + 10, 607))
+        print_text(screen, button['label'], (start + 10, 607))
         button['pos'] = (start, 605, 150, 20)
         start += 170
 
