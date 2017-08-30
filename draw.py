@@ -3,7 +3,7 @@ import sys
 import pygame
 from math import sin, cos
 
-RESOURCE_RADUIS = 50
+RESOURCE_RADUIS = consts.RESOURCE_RADIUS
 PLAYER_POSITIONS = [
         (0,0,150,150),
         (500,0,150,150),

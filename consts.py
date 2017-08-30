@@ -21,30 +21,33 @@ PlayerColors = {
         4: (0, 0, 255)
 }
 
+CENTER = (300,300)
+RESOURCE_RADIUS = 50
+
 TilePositions = {
-        0: (200,100),
-        1: (300,100),
-        2: (400,100),
+        0: (CENTER[0] - 2 * RESOURCE_RADIUS, CENTER[1] - 4 * RESOURCE_RADIUS),
+        1: (CENTER[0], CENTER[1] - 4 * RESOURCE_RADIUS),
+        2: (CENTER[0] + 2 * RESOURCE_RADIUS, CENTER[1] - 4 * RESOURCE_RADIUS),
 
-        11: (150,200),
-        12: (250,200),
-        13: (350,200),
-        3: (450,200),
+        11: (CENTER[0] - 3 * RESOURCE_RADIUS, CENTER[1] - 2 * RESOURCE_RADIUS),
+        12: (CENTER[0] - RESOURCE_RADIUS, CENTER[1] - 2 * RESOURCE_RADIUS),
+        13: (CENTER[0] + RESOURCE_RADIUS, CENTER[1] - 2 * RESOURCE_RADIUS),
+        3: (CENTER[0] + 3 * RESOURCE_RADIUS, CENTER[1] - 2 * RESOURCE_RADIUS),
 
-        10: (100,300),
-        17: (200,300),
-        18: (300,300),
-        14: (400,300),
-        4: (500,300),
+        10: (CENTER[0] - 4 * RESOURCE_RADIUS, CENTER[1]),
+        17: (CENTER[0] - 2 * RESOURCE_RADIUS, CENTER[1]),
+        18: (CENTER[0], CENTER[1]),
+        14: (CENTER[0] + 2 * RESOURCE_RADIUS, CENTER[1]),
+        4: (CENTER[0] + 4 * RESOURCE_RADIUS, CENTER[1]),
 
-        9: (150,400),
-        16: (250,400),
-        15: (350,400),
-        5: (450,400),
+        9: (CENTER[0] - 3 * RESOURCE_RADIUS, CENTER[1] + 2 * RESOURCE_RADIUS),
+        16: (CENTER[0] - RESOURCE_RADIUS, CENTER[1] + 2 * RESOURCE_RADIUS),
+        15: (CENTER[0] + RESOURCE_RADIUS, CENTER[1] + 2 * RESOURCE_RADIUS),
+        5: (CENTER[0] + 3 * RESOURCE_RADIUS, CENTER[1] + 2 * RESOURCE_RADIUS),
 
-        8: (200,500),
-        7: (300,500),
-        6: (400,500),
+        8: (CENTER[0] - 2 * RESOURCE_RADIUS, CENTER[1] + 4 * RESOURCE_RADIUS),
+        7: (CENTER[0], CENTER[1] + 4 * RESOURCE_RADIUS),
+        6: (CENTER[0] + 2 * RESOURCE_RADIUS, CENTER[1] + 4 * RESOURCE_RADIUS),
 }
 
 TileSettlementMap = {
