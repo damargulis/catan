@@ -260,3 +260,4 @@ Costs = {
             Resource.WOOL: 1,
         },
 }
+

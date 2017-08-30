@@ -33,11 +33,9 @@ class Player(object):
 
     def can_buy(self, board, item):
         if item == 'd_card':
-            return True
+            return len(board.d_cards) > 0
         elif item == 'road':
-            if self.roads_left > 0:
-                return True
-            return False
+            return self.roads_left > 0
         elif item == 'city':
             if self.cities_left > 0:
                 for settlement in board.settlements:
@@ -45,8 +43,12 @@ class Player(object):
                         return True
             return False
         elif item == 'settlement':
-            pass # figure this out -- and need a new place_settlement that must be attatched to current road
+            pass # figure this out -- and need a new place_settlement that must be attatched to a current road
 
+    def pick_d_card(self, board):
+        card = board.d_cards.pop()
+        self.d_cards.append(card)
+        return card
 
     def purchase(self, item, board):
         for resource in consts.Costs[item]:

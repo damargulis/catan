@@ -58,6 +58,13 @@ def get_possible_purchases(player, board, players):
                     elif item == 'city':
                         print_screen(screen, board, 'Pick a settlement to city', players)
                         player.place_city(board)
+                    elif item == 'd_card':
+                        def select_ok():
+                            return [], None
+                        card = player.pick_d_card(board)
+                        buttons = [{'label': 'ok', 'action': select_ok}]
+                        print_screen(screen, board, 'You picked a ' + card, players, buttons)
+                        player.pick_option(buttons)
                     return [], None
                 return make_purchase
             can_afford.append({
