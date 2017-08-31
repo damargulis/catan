@@ -56,6 +56,7 @@ def print_text(screen, text, position, color=white):
     myfont = pygame.font.SysFont("monospace", consts.TEXT_SIZE)
     label = myfont.render(text, 1, color)
     screen.blit(label, position)
+    return myfont.size(text)
 
 def print_player(screen, player):
     position = PLAYER_POSITIONS[player.number - 1]
@@ -102,16 +103,16 @@ def print_screen(screen, board, text, players, buttons=[]):
             ), 
             consts.LINE_WIDTH
     )
-    print_text(screen, text, (consts.LINE_WIDTH * 2,consts.HEIGHT - consts.DIALOG_HEIGHT + consts.LINE_WIDTH))
-    print_buttons(screen, buttons)
+    size = print_text(screen, text, (consts.LINE_WIDTH * 2,consts.HEIGHT - consts.DIALOG_HEIGHT + consts.LINE_WIDTH))
+    far_x = size[0] + consts.LINE_WIDTH * 2
+    print_buttons(screen, buttons, far_x)
     pygame.display.flip()
 
-def print_buttons(screen, buttons):
+def print_buttons(screen, buttons, start):
     top = consts.HEIGHT - consts.DIALOG_HEIGHT + consts.LINE_WIDTH
-    start = 200
     for button in buttons:
-        pygame.draw.rect(screen, white, (start, top, 150, 20), 2)
-        print_text(screen, button['label'], (start + 10, top))
-        button['pos'] = (start, top, 150, 20)
-        start += 170
+        size = print_text(screen, button['label'], (start + consts.LINE_WIDTH * 4, top))
+        pygame.draw.rect(screen, white, (start + consts.LINE_WIDTH * 2, top, size[0] + consts.LINE_WIDTH * 3, 20), 2)
+        button['pos'] = (start + 10, top, size[0] + 15, 20)
+        start += size[0] + 25
 
