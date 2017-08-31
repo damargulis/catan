@@ -8,9 +8,8 @@ import sys
 
 pygame.init()
 
-size = width, height = 640, 640
-black = (0,0,0)
-
+size = consts.SCREEN_SIZE
+black = consts.BLACK
 screen = pygame.display.set_mode(size)
 
 def pick_settlements(players, board):

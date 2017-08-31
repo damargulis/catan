@@ -6,36 +6,33 @@ from math import sin, cos
 RESOURCE_RADUIS = consts.RESOURCE_RADIUS
 PLAYER_POSITIONS = consts.PLAYER_POSITIONS
 
-black = 0,0,0
-white = 255,255,255
+black = consts.BLACK
+white = consts.WHITE
 
 def draw_resource_tile(surface, tile):
-    pi2 = 2 * 3.14
+    pi = 3.14
     n = 6
     position = tile.location
-
     pygame.draw.polygon(
         surface, 
         tile.color,
         [
             (
-                cos(i / n * pi2 + 3.14 / 2) * RESOURCE_RADUIS + position[0],
-                sin(i / n * pi2 + 3.14 / 2) * RESOURCE_RADUIS + position[1]
+                cos(i / n * 2 * pi + pi / 2) * RESOURCE_RADUIS + position[0],
+                sin(i / n * 2 * pi + pi / 2) * RESOURCE_RADUIS + position[1]
             )
             for i in range(0,n)
         ]
     )
-    myfont = pygame.font.SysFont("monospace", 15)
     if tile.chit:
         print_text(surface, str(tile.chit), tile.location, black)
 
 def draw_settlement(surface, settlement):
-    size = 20 if settlement.city else 10
     pygame.draw.circle(
             surface,
             settlement.color,
             settlement.position,
-            size
+            consts.CITY_SIZE if settlement.city else consts.SETTLEMENT_SIZE
     )
 
 def draw_road(surface, road):
@@ -44,7 +41,7 @@ def draw_road(surface, road):
             road.color,
             road.start,
             road.end,
-            10
+            consts.ROAD_WIDTH
     )
 
 def print_board(screen, board):
