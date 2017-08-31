@@ -6,6 +6,8 @@ CITY_SIZE = 20
 ROAD_WIDTH = 10
 
 DIALOG_HEIGHT = 50
+TEXT_SIZE = 15
+LINE_WIDTH = 5
 
 class Resource(object):
     BRICK = 0

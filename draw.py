@@ -53,17 +53,17 @@ def print_board(screen, board):
         draw_road(screen, road)
 
 def print_text(screen, text, position, color=white):
-    myfont = pygame.font.SysFont("monospace", 15)
+    myfont = pygame.font.SysFont("monospace", consts.TEXT_SIZE)
     label = myfont.render(text, 1, color)
     screen.blit(label, position)
 
 def print_player(screen, player):
     position = PLAYER_POSITIONS[player.number - 1]
-    pygame.draw.rect(screen, white, position, 5)
+    pygame.draw.rect(screen, white, position, consts.LINE_WIDTH)
     print_text(
             screen, 
             'Player ' + str(player.number), 
-            (position[0] + 30, position[1] + 5),
+            (position[0] + 30, position[1] + consts.LINE_WIDTH),
             player.color, 
     )
     labels = [
@@ -78,8 +78,11 @@ def print_player(screen, player):
     ]
     def print_player_stats(screen, label, position):
         print_text(screen, label, (position[0], position[1]))
-        return (position[0], position[1] + 15)
-    position = (position[0] + 10, position[1] + 20)
+        return (position[0], position[1] + consts.TEXT_SIZE)
+    position = (
+            position[0] + 10, 
+            position[1] + consts.LINE_WIDTH + consts.TEXT_SIZE
+    )
     for label in labels:
         position = print_player_stats(screen, label, position)
 
