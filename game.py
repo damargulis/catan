@@ -126,7 +126,6 @@ def main():
             option = player.pick_option(buttons)
             buttons, label = option['action']()
         player_turn = (player_turn + 1) % 4
-        print('player ' + str(player_turn))
 
 if __name__ == '__main__':
     main()

@@ -76,6 +76,3 @@ class Board(object):
                 + ['monopoly'] * 2
         )
 
-if __name__ == '__main__':
-    board = Board()
-    print_board(board)

@@ -73,7 +73,6 @@ class Player(object):
                                     return
                             else:
                                 roads_owned = [r for r in board.roads if r.color == self.color]
-                                print(roads_owned)
                                 for test_r in roads_owned:
                                     if road.start == test_r.start or test_r.end == road.end or road.start == test_r.end or road.end == test_r.start:
                                         board.roads.append(road)
