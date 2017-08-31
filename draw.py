@@ -66,46 +66,22 @@ def print_player(screen, player):
             (position[0] + 30, position[1] + 5),
             player.color, 
     )
-    print_text(
-            screen,
+    labels = [
             'Points: ' + str(player.points),
-            (position[0] + 10, position[1] + 20),
-    )
-    print_text(
-            screen,
             'Brick: ' + str(player.hand[consts.Resource.BRICK]),
-            (position[0] + 10, position[1] + 35),
-    )
-    print_text(
-            screen,
             'Grain: ' + str(player.hand[consts.Resource.GRAIN]),
-            (position[0] + 10, position[1] + 50),
-    )
-    print_text(
-            screen,
             'Lumber: ' + str(player.hand[consts.Resource.LUMBER]),
-            (position[0] + 10, position[1] + 65),
-    )
-    print_text(
-            screen,
             'Ore: ' + str(player.hand[consts.Resource.ORE]),
-            (position[0] + 10, position[1] + 80)
-    )
-    print_text(
-            screen,
             'Wool: ' + str(player.hand[consts.Resource.WOOL]),
-            (position[0] + 10, position[1] + 95)
-    )
-    print_text(
-            screen,
             'Dev Cards: ' + str(len(player.d_cards)),
-            (position[0] + 10, position[1] + 110)
-    )
-    print_text(
-            screen,
             'Knights: ' + str(player.knights),
-            (position[0] + 10, position[1] + 125)
-    )
+    ]
+    def print_player_stats(screen, label, position):
+        print_text(screen, label, (position[0], position[1]))
+        return (position[0], position[1] + 15)
+    position = (position[0] + 10, position[1] + 20)
+    for label in labels:
+        position = print_player_stats(screen, label, position)
 
 def print_screen(screen, board, text, players, buttons=[]):
     screen.fill(black)
