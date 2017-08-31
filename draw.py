@@ -99,7 +99,7 @@ def print_screen(screen, board, text, players, buttons=[]):
 def print_buttons(screen, buttons):
     start = 200
     for button in buttons:
-        pygame.draw.rect(screen, (255,255,255), (start, 605, 150, 20), 2)
+        pygame.draw.rect(screen, white, (start, 605, 150, 20), 2)
         print_text(screen, button['label'], (start + 10, 607))
         button['pos'] = (start, 605, 150, 20)
         start += 170
