@@ -91,7 +91,7 @@ def print_screen(screen, board, text, players, buttons=[]):
     print_board(screen, board)
     for player in players:
         print_player(screen, player)
-    pygame.draw.rect(screen, (255,255,255), (0,590,640,50), 5)
+    pygame.draw.rect(screen, white, (0,590,640,50), 5)
     print_text(screen, text, (20,600))
     print_buttons(screen, buttons)
     pygame.display.flip()
