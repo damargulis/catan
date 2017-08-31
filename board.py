@@ -3,7 +3,6 @@ from random import shuffle
 from draw import print_board
 
 class ResourceTile(object):
-
     def __init__(self, resource):
         self.resource = resource
         self.color = consts.ResourceColors[resource]
@@ -45,22 +44,16 @@ class Board(object):
 
     def _get_tiles(self):
         tiles = []
-        location = 0
         for i in range(3):
             tiles.append(ResourceTile(consts.Resource.BRICK))
-            location += 1
         for i in range(4):
             tiles.append(ResourceTile(consts.Resource.LUMBER))
-            location += 1
         for i in range(4):
             tiles.append(ResourceTile(consts.Resource.WOOL))
-            location += 1
         for i in range(4):
             tiles.append(ResourceTile(consts.Resource.GRAIN))
-            location += 1
         for i in range(3):
             tiles.append(ResourceTile(consts.Resource.ORE))
-            location += 1
         tiles.append(DesertTile())
         return tiles
 
