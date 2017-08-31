@@ -91,16 +91,27 @@ def print_screen(screen, board, text, players, buttons=[]):
     print_board(screen, board)
     for player in players:
         print_player(screen, player)
-    pygame.draw.rect(screen, white, (0,590,640,50), 5)
-    print_text(screen, text, (20,600))
+    pygame.draw.rect(
+            screen, 
+            white, 
+            (
+                0,
+                consts.HEIGHT - consts.DIALOG_HEIGHT,
+                consts.WIDTH,
+                consts.DIALOG_HEIGHT,
+            ), 
+            consts.LINE_WIDTH
+    )
+    print_text(screen, text, (consts.LINE_WIDTH * 2,consts.HEIGHT - consts.DIALOG_HEIGHT + consts.LINE_WIDTH))
     print_buttons(screen, buttons)
     pygame.display.flip()
 
 def print_buttons(screen, buttons):
+    top = consts.HEIGHT - consts.DIALOG_HEIGHT + consts.LINE_WIDTH
     start = 200
     for button in buttons:
-        pygame.draw.rect(screen, white, (start, 605, 150, 20), 2)
-        print_text(screen, button['label'], (start + 10, 607))
-        button['pos'] = (start, 605, 150, 20)
+        pygame.draw.rect(screen, white, (start, top, 150, 20), 2)
+        print_text(screen, button['label'], (start + 10, top))
+        button['pos'] = (start, top, 150, 20)
         start += 170
 
