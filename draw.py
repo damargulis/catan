@@ -59,7 +59,7 @@ def print_text(screen, text, position, color=white):
 
 def print_player(screen, player):
     position = PLAYER_POSITIONS[player.number - 1]
-    pygame.draw.rect(screen, (255,255,255), position, 5)
+    pygame.draw.rect(screen, white, position, 5)
     print_text(
             screen, 
             'Player ' + str(player.number), 
