@@ -41,6 +41,8 @@ def give_resources(board, total):
                 for settlement in board.settlements:
                     if settlement.number == settlement_number:
                         settlement.player.take_resource(tile.resource)
+                        if settlement.city:
+                            settlement.player.take_resource(tile.resource)
 
 def get_possible_purchases(player, board, players):
     can_afford = []
