@@ -64,7 +64,10 @@ def print_player(screen, player):
     print_text(
             screen, 
             'Player ' + str(player.number), 
-            (position[0] + 30, position[1] + consts.LINE_WIDTH),
+            (
+                position[0] + consts.LINE_WIDTH* 6, 
+                position[1] + consts.LINE_WIDTH
+            ),
             player.color, 
     )
     labels = [
@@ -81,7 +84,7 @@ def print_player(screen, player):
         print_text(screen, label, (position[0], position[1]))
         return (position[0], position[1] + consts.TEXT_SIZE)
     position = (
-            position[0] + 10, 
+            position[0] + consts.LINE_WIDTH* 2, 
             position[1] + consts.LINE_WIDTH + consts.TEXT_SIZE
     )
     for label in labels:
@@ -128,7 +131,7 @@ def print_buttons(screen, buttons, start):
         pygame.draw.rect(
                 screen, 
                 white, 
-                (left, top, width, 20),
+                (left, top, width, consts.DIALOG_HEIGHT / 2),
                 2
         )
         button['pos'] = (left, top, width, consts.TEXT_SIZE * 2)
