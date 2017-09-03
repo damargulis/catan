@@ -26,6 +26,13 @@ def draw_resource_tile(surface, tile):
     )
     if tile.chit:
         print_text(surface, str(tile.chit), tile.location, black)
+    if tile.blocked:
+        pygame.draw.circle(
+                surface,
+                consts.ROBBER_COLOR,
+                tile.location,
+                consts.ROBBER_SIZE,
+        )
 
 def draw_settlement(surface, settlement):
     pygame.draw.circle(

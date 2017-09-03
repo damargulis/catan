@@ -1,6 +1,7 @@
 import consts
 import math
 import pygame
+import random
 import sys
 
 class Player(object):
@@ -125,6 +126,42 @@ class Player(object):
                 for option in options:
                     if is_inside(event.pos, option['pos']):
                         return option
+
+    def pick_tile_to_block(self, board):
+        while True:
+            event = pygame.event.wait()
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                print('got event')
+                for num, pos in consts.TilePositions.items():
+                    dist = math.hypot(pos[0] - event.pos[0], pos[1] - event.pos[1])
+                    if dist < consts.RESOURCE_RADIUS / 2:
+                        print('dist checks')
+                        tile = board.tiles[num]
+                        if tile.resource and not tile.blocked:
+                            print('has resource and not blocked')
+                            for other_tile in board.tiles:
+                                other_tile.blocked = False
+                            tile.blocked = True
+                            settlements_blocking = consts.TileSettlementMap[num]
+                            players = []
+                            for settlement in board.settlements:
+                                if settlement.number in settlements_blocking and not settlement.player == self:
+                                    players.append(settlement.player)
+                            return sorted(players, key=lambda player: player.number)
+
+    def cut_by_half(self):
+        while sum([self.hand[resource] for resource in self.hand]) > 7:
+            resources = []
+            print('you need to cut')
+            return
+
+    def give_random_to(self, player):
+        cards = [ resource for resource in self.hand for x in range(self.hand[resource]) ]
+        card = random.choice(cards)
+        self.hand[card] -= 1
+        player.hand[card] += 1
 
 def is_inside(pos, box):
     if pos[0] < box[0]:

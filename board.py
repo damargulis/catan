@@ -19,6 +19,7 @@ class DesertTile(ResourceTile):
         self.resource = None
         self.chit = None
         self.color = consts.ResourceColors['desert']
+        self.blocked = True
 
     def set_chit(self, chit):
         raise NotImplementedError
