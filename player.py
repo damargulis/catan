@@ -35,6 +35,7 @@ class Player(object):
         if item == 'd_card':
             return len(board.d_cards) > 0
         elif item == 'road':
+            # TODO: and has a place to put it
             return self.roads_left > 0
         elif item == 'city':
             if self.cities_left > 0:
@@ -43,7 +44,7 @@ class Player(object):
                         return True
             return False
         elif item == 'settlement':
-            pass # figure this out -- and need a new place_settlement that must be attatched to a current road
+            pass # TODO: figure this out -- and need a new place_settlement that must be attatched to a current road
 
     def pick_d_card(self, board):
         card = board.d_cards.pop()
