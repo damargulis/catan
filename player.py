@@ -133,14 +133,11 @@ class Player(object):
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONUP:
-                print('got event')
                 for num, pos in consts.TilePositions.items():
                     dist = math.hypot(pos[0] - event.pos[0], pos[1] - event.pos[1])
                     if dist < consts.RESOURCE_RADIUS / 2:
-                        print('dist checks')
                         tile = board.tiles[num]
                         if tile.resource and not tile.blocked:
-                            print('has resource and not blocked')
                             for other_tile in board.tiles:
                                 other_tile.blocked = False
                             tile.blocked = True
