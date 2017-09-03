@@ -151,12 +151,6 @@ class Player(object):
                                     players.append(settlement.player)
                             return sorted(players, key=lambda player: player.number)
 
-    def cut_by_half(self):
-        while sum([self.hand[resource] for resource in self.hand]) > 7:
-            resources = []
-            print('you need to cut')
-            return
-
     def give_random_to(self, player):
         cards = [ resource for resource in self.hand for x in range(self.hand[resource]) ]
         card = random.choice(cards)
