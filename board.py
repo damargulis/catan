@@ -62,10 +62,45 @@ class Board(object):
 
     def _get_d_cards(self):
         return (
-                ['knight'] * 14 
-                + ['point'] * 5 
-                + ['monopoly'] * 2 
-                + ['road_builder'] * 2 
-                + ['monopoly'] * 2
+                [ Knight ] * 14
+                + [ Point ] * 5
+                + [ Monopoly ] * 2
+                + [ RoadBuilder ] * 2
+                + [ Monopoly ] * 2
         )
 
+    def get_tiles(self, settlement):
+        return [
+                tile for tile in consts.TileSettlementMap
+                if settlement.number in consts.TileSettlementMap[tile]
+        ]
+
+class Knight(object):
+    label = 'Knight'
+
+    def action():
+        print('Playing knight')
+
+class Point(object):
+    label = 'Point'
+
+    def action():
+        print('playing point')
+
+class Monopoly(object):
+    label = 'Monopoly'
+
+    def action(): 
+        print('playing monopoly')
+
+class RoadBuilder(object):
+    label = 'Road Builder'
+
+    def action():
+        print('playing road builder')
+
+class Monopoly(object):
+    label = 'Monopoly'
+
+    def action():
+        print('Playing Monopoly')

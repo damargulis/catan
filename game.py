@@ -22,7 +22,7 @@ def pick_settlements(players, board):
             print_screen(screen, board, text, players)
             player.place_road(board, settlement)
             if second:
-                tiles = [tile for tile in consts.TileSettlementMap if settlement.number in consts.TileSettlementMap[tile]]
+                tiles = board.get_tiles(settlement)
                 for tile in tiles:
                     resource = board.tiles[tile].resource
                     if resource is not None:
@@ -35,7 +35,7 @@ def pick_settlements(players, board):
 
 def give_resources(board, total):
     for num, tile in enumerate(board.tiles):
-        if tile.chit == total:
+        if tile.resource and not tile.blocked and tile.chit == total:
             for settlement_number in consts.TileSettlementMap[num]:
                 for settlement in board.settlements:
                     if settlement.number == settlement_number:
@@ -62,7 +62,7 @@ def get_possible_purchases(player, board, players):
                     elif item == 'd_card':
                         card = player.pick_d_card(board)
                         buttons = [{'label': 'ok', 'action': end_turn}]
-                        print_screen(screen, board, 'You picked a ' + card, players, buttons)
+                        print_screen(screen, board, 'You picked a ' + card.label, players, buttons)
                         player.pick_option(buttons)
                     return [], None
                 return make_purchase
@@ -78,13 +78,6 @@ def get_possible_purchases(player, board, players):
 
 def end_turn():
     return [], None
-
-def main_2():
-    board = Board()
-    dice = Dice()
-    players = [ Player(i) for i in range(1,5) ]
-    pick_settlements(players, board)
-    player_turn = 0
 
 def main():
     board = Board()
@@ -107,8 +100,10 @@ def main():
                     }
             ]
             possible_purchases = get_possible_purchases(player, board, players)
+
             def make_purchase():
                 return possible_purchases, 'Buy:'
+
             if len(possible_purchases) > 1:
                 buttons.append({
                     'label': 'Make Purchase',
@@ -121,8 +116,15 @@ def main():
                     'action': roll_dice
                  }
         ]
-        if len(player.d_cards):
-            buttons.append({'label': 'Play D Card'})
+
+        d_cards = [{'label': card.label, 'action': card.action} for card in player.d_cards] 
+        def play_d_card():
+            return d_cards, 'Which Card: '
+        if player.d_cards:
+            buttons.append({
+                'label': 'Play D Card',
+                'action': play_d_card
+            })
         label = 'Player %s\'s Turn' % player.number
         while buttons:
             print_screen(screen, board, label, players, buttons)
