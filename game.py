@@ -124,8 +124,7 @@ def main():
                     player_chosen = player.pick_option(buttons)
                     player_chosen['player'].give_random_to(player)
 
-            else:
-                give_resources(board, total)
+            give_resources(board, total)
             buttons = [
                     {
                         'label': 'End Turn',
