@@ -60,10 +60,8 @@ def get_possible_purchases(player, board, players):
                         print_screen(screen, board, 'Pick a settlement to city', players)
                         player.place_city(board)
                     elif item == 'd_card':
-                        def select_ok():
-                            return [], None
                         card = player.pick_d_card(board)
-                        buttons = [{'label': 'ok', 'action': select_ok}]
+                        buttons = [{'label': 'ok', 'action': end_turn}]
                         print_screen(screen, board, 'You picked a ' + card, players, buttons)
                         player.pick_option(buttons)
                     return [], None
@@ -72,18 +70,26 @@ def get_possible_purchases(player, board, players):
                 'label': item,
                 'action': func_creator(item),
             })
-    def cancel():
-        return [], None
     can_afford.append({
         'label': 'cancel',
-        'action': cancel
+        'action': end_turn
     })
     return can_afford
+
+def end_turn():
+    return [], None
+
+def main_2():
+    board = Board()
+    dice = Dice()
+    players = [ Player(i) for i in range(1,5) ]
+    pick_settlements(players, board)
+    player_turn = 0
 
 def main():
     board = Board()
     dice = Dice()
-    players = [ Player(i, consts.PlayerColors[i]) for i in range(1,5) ]
+    players = [ Player(i) for i in range(1,5) ]
     player_turn = 0
     pick_settlements(players, board)
     while 1:
@@ -94,8 +100,6 @@ def main():
         def roll_dice():
             total = sum(dice.roll())
             give_resources(board, total)
-            def end_turn():
-                return [], None
             buttons = [
                     {
                         'label': 'End Turn',

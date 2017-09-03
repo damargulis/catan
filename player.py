@@ -4,9 +4,9 @@ import pygame
 import sys
 
 class Player(object):
-    def __init__(self, number, color):
+    def __init__(self, number):
         self.number = number
-        self.color = color
+        self.color = consts.PlayerColors[number]
         self.hand = {
                 consts.Resource.BRICK: 0,
                 consts.Resource.LUMBER: 0,
