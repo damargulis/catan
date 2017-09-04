@@ -186,7 +186,7 @@ class Player(object):
             if self.hand[resource] >= 3:
                 if self.has_port(ports):
                     exchanges.append({
-                        'label': consts.ResourceMap[resource] + '3:1',
+                        'label': consts.ResourceMap[resource] + ' 3:1',
                         'action': self.make_exchange(screen, board, players, resource, -3)
                     })
                     break
