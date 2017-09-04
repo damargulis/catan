@@ -148,10 +148,10 @@ def main():
                  }
         ]
 
-        d_cards = [{'label': card.label, 'action': card.action} for card in player.d_cards] 
+        d_cards = [{'label': card.label, 'action': card.action} for card in player.d_cards if card != 'Point'] 
         def play_d_card():
             return d_cards, 'Which Card: '
-        if player.d_cards:
+        if d_cards:
             buttons.append({
                 'label': 'Play D Card',
                 'action': play_d_card

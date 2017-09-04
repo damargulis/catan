@@ -154,6 +154,15 @@ class Player(object):
         self.hand[card] -= 1
         player.hand[card] += 1
 
+    def __eq__(self, other):
+        return self.number == other.number
+
+    def __ne__(self, other):
+        return self.number != other.number
+
+    def __hash__(self):
+        return hash(self.number)
+
 def is_inside(pos, box):
     if pos[0] < box[0]:
         return False
