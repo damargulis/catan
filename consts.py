@@ -9,12 +9,23 @@ DIALOG_HEIGHT = 50
 TEXT_SIZE = 15
 LINE_WIDTH = 5
 
+ROBBER_SIZE = 10
+ROBBER_COLOR = (0,0,0)
+
 class Resource(object):
     BRICK = 0
     GRAIN = 1
     LUMBER = 2
     ORE = 3
     WOOL = 4
+
+ResourceMap = [
+        'Brick',
+        'Grain',
+        'Lumber',
+        'Ore',
+        'Wool',
+]
 
 ResourceColors = {
         Resource.BRICK: (250,0,0),

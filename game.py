@@ -85,6 +85,7 @@ def main():
     players = [ Player(i) for i in range(1,5) ]
     player_turn = 0
     pick_settlements(players, board)
+    first_turn = True
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -92,6 +93,36 @@ def main():
         player = players[player_turn]
         def roll_dice():
             total = sum(dice.roll())
+            if total == 7:
+                if first_turn:
+                    while total == 7:
+                        total = sum(dice.roll())
+                else:
+                    for p in players:
+                        while sum([p.hand[resource] for resource in p.hand]) > 7:
+                            resources = [resource for resource in p.hand if p.hand[resource]]
+                            resources = list(set(resources))
+                            buttons = [{
+                                    'resource': resource,
+                                    'label': consts.ResourceMap[resource],
+                            } for resource in resources]
+                            options = print_screen(screen, board, 'Player ' + str(p.number) + ' Pick a resource to give away', players, buttons)
+                            resource_chosen = player.pick_option(buttons)
+                            p.hand[resource_chosen['resource']] -= 1
+
+                    print_screen(screen, board, 'Player ' + str(player.number) + ' rolled a 7. Pick a settlement to Block', players)
+                    players_blocked = player.pick_tile_to_block(board)
+                    buttons = [
+                            {
+                                'label': 'Player ' + str(player_blocked.number),
+                                'player': player_blocked
+                            }
+                            for player_blocked in players_blocked
+                    ]
+                    print_screen(screen, board, 'Take a resource from:', players, buttons)
+                    player_chosen = player.pick_option(buttons)
+                    player_chosen['player'].give_random_to(player)
+
             give_resources(board, total)
             buttons = [
                     {
@@ -131,6 +162,8 @@ def main():
             option = player.pick_option(buttons)
             buttons, label = option['action']()
         player_turn = (player_turn + 1) % 4
+        if player_turn == 0:
+            first_turn = False
 
 if __name__ == '__main__':
     main()
