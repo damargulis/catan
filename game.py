@@ -140,6 +140,14 @@ def main():
                     'label': 'Make Purchase',
                     'action': make_purchase
                 })
+            d_cards = [{'label': card.label, 'action': card.make_action(screen, board, players, player)} for card in player.d_cards if card.label != 'Point'] 
+            def play_d_card():
+                return d_cards + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Which Card: '
+            if d_cards:
+                buttons.append({
+                    'label': 'Play D Card',
+                    'action': play_d_card
+                })
             return buttons, 'You Rolled: ' + str(total)
         buttons = [
                 {
@@ -148,14 +156,6 @@ def main():
                  }
         ]
 
-        d_cards = [{'label': card.label, 'action': card.make_action(screen, board, players, player)} for card in player.d_cards if card.label != 'Point'] 
-        def play_d_card():
-            return d_cards + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Which Card: '
-        if d_cards:
-            buttons.append({
-                'label': 'Play D Card',
-                'action': play_d_card
-            })
         label = 'Player %s\'s Turn' % player.number
         while buttons:
             print_screen(screen, board, label, players, buttons)
