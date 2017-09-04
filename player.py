@@ -146,6 +146,7 @@ class Player(object):
                             for settlement in board.settlements:
                                 if settlement.number in settlements_blocking and not settlement.player == self:
                                     players.append(settlement.player)
+                            players = list(set(players))
                             return sorted(players, key=lambda player: player.number)
 
     def give_random_to(self, player):
