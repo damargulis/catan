@@ -51,9 +51,24 @@ def draw_road(surface, road):
             consts.ROAD_WIDTH
     )
 
+def draw_port(screen, port):
+    location = consts.SettlementPositions[port]
+    pygame.draw.rect(
+            screen,
+            consts.WHITE if consts.Ports[port][0] == 'any' else consts.ResourceColors[consts.Ports[port][0]],
+            (
+                location[0] - 20,
+                location[1] - 20,
+                40,
+                40,
+            )
+    )
+
 def print_board(screen, board):
     for tile in board.tiles:
         draw_resource_tile(screen, tile)
+    for port in consts.Ports:
+        draw_port(screen, port)
     for settlement in board.settlements:
         draw_settlement(screen, settlement)
     for road in board.roads:
@@ -102,6 +117,9 @@ def print_screen(screen, board, text, players, buttons=[]):
     print_board(screen, board)
     for player in players:
         print_player(screen, player)
+    print_dialog(screen, text, buttons)
+
+def print_dialog(screen, text, buttons):
     pygame.draw.rect(
             screen, 
             white, 
