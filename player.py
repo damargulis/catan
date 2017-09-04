@@ -165,15 +165,37 @@ class Player(object):
             return buttons, 'Trade with: '
         return exchange
 
+    def has_port(self, ports, resource=None):
+        for port in ports:
+            if (resource and port[0] == resource) or (resource is not None and port[0] == 'any'):
+                return True
+        return False
 
     def get_exchanges(self, screen, board, players):
         exchanges = []
+        settlements = [settlement for settlement in board.settlements if settlement.player == self]
+        ports = [consts.Ports.get(settlement.number) for settlement in settlements if consts.Ports.get(settlement.number)]
         for resource in self.hand:
+            if self.hand[resource] >= 2:
+                if self.has_port(ports, resource):
+                    exchanges.append({
+                        'label': consts.ResourceMap[resource] + ' 2:1',
+                        'action': self.make_exchange(screen, board, players, resource, -2)
+                    })
+                    break
+            if self.hand[resource] >= 3:
+                if self.has_port(ports):
+                    exchanges.append({
+                        'label': consts.ResourceMap[resource] + '3:1',
+                        'action': self.make_exchange(screen, board, players, resource, -3)
+                    })
+                    break
             if self.hand[resource] >= 4:
                 exchanges.append({
-                    'label': consts.ResourceMap[resource] + ' 1:4',
+                    'label': consts.ResourceMap[resource] + ' 4:1',
                     'action': self.make_exchange(screen, board, players, resource, -4)
                 })
+
         return exchanges
 
     def __eq__(self, other):
