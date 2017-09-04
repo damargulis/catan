@@ -143,6 +143,16 @@ def main():
             d_cards = [{'label': card.label, 'action': card.make_action(screen, board, players, player)} for card in player.d_cards if card.label != 'Point'] 
             def play_d_card():
                 return d_cards + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Which Card: '
+
+            exchanges = player.get_exchanges(screen, board, players)
+            def exchange():
+                return exchanges + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Exhange: '
+            if exchanges:
+                buttons.append({
+                    'label': 'Exchange',
+                    'action': exchange,
+                })
+
             if d_cards:
                 buttons.append({
                     'label': 'Play D Card',
