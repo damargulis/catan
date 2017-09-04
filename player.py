@@ -157,9 +157,7 @@ class Player(object):
         player.hand[card] += 1
 
     def make_exchange(self, screen, board, players, resource, amt, first=True):
-        print('here2')
         def exchange():
-            print('here4')
             self.hand[resource] += amt
             if not first:
                 return [], None
@@ -169,7 +167,6 @@ class Player(object):
 
 
     def get_exchanges(self, screen, board, players):
-        print('here1')
         exchanges = []
         for resource in self.hand:
             if self.hand[resource] >= 4:
