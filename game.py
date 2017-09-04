@@ -110,7 +110,6 @@ def main():
                             resource_chosen = player.pick_option(buttons)
                             p.hand[resource_chosen['resource']] -= 1
 
-                        p.cut_by_half()
                     print_screen(screen, board, 'Player ' + str(player.number) + ' rolled a 7. Pick a settlement to Block', players)
                     players_blocked = player.pick_tile_to_block(board)
                     buttons = [
