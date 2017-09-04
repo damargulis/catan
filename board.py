@@ -137,7 +137,7 @@ class RoadBuilder(object):
         return action
 
 class YearOfPlenty(object):
-    label = 'YearOfPlenty'
+    label = 'Year Of Plenty'
 
     def make_action(self, screen, board, players, player):
         def action():
