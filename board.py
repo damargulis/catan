@@ -1,6 +1,6 @@
 import consts
 from random import shuffle
-from draw import print_board
+from draw import print_screen
 
 class ResourceTile(object):
     def __init__(self, resource):
@@ -63,11 +63,11 @@ class Board(object):
 
     def _get_d_cards(self):
         return (
-                [ Knight ] * 14
-                + [ Point ] * 5
-                + [ Monopoly ] * 2
-                + [ RoadBuilder ] * 2
-                + [ Monopoly ] * 2
+                [ Knight() ] * 14
+                + [ Point() ] * 5
+                + [ Monopoly() ] * 2
+                + [ RoadBuilder() ] * 2
+                + [YearOfPlenty() ] * 2
         )
 
     def get_tiles(self, settlement):
@@ -79,29 +79,79 @@ class Board(object):
 class Knight(object):
     label = 'Knight'
 
-    def action():
-        print('Playing knight')
+    def make_action(self, screen, board, players, player):
+        def action():
+            player.d_cards.remove(self)
+            print_screen(screen, board, 'Player ' + str(player.number) + ': Pick a settlement to Block', players)
+            players_blocked = player.pick_tile_to_block(board)
+            buttons = [
+                    {
+                        'label': 'Player ' + str(player_blocked.number),
+                        'player': player_blocked
+                    } for player_blocked in players_blocked
+            ]
+            if buttons:
+                print_screen(screen, board, 'Take a resource from:', players, buttons)
+                player_chosen = player.pick_option(buttons)
+                player_chosen['player'].give_random_to(player)
+            return [], None
+        return action
 
 class Point(object):
     label = 'Point'
 
-    def action():
-        print('playing point')
+    def make_action(self, screen, board, players, player):
+        raise NotImplementedError
 
 class Monopoly(object):
     label = 'Monopoly'
 
-    def action(): 
-        print('playing monopoly')
+    def make_action(self, screen, board, players, player):
+        def action():
+            player.d_cards.remove(self)
+            buttons = [
+                    {
+                        'label': consts.ResourceMap[i],
+                        'resource': i,
+                    } for i in range(5)
+            ]
+            print_screen(screen, board, 'Take all of:', players, buttons)
+            resource = player.pick_option(buttons)['resource']
+            for p in players:
+                if p != player:
+                    player.hand[resource] += p.hand[resource]
+                    p.hand[resource] = 0
+            return [], None
+        return action
 
 class RoadBuilder(object):
     label = 'Road Builder'
 
-    def action():
-        print('playing road builder')
+    def make_action(self, screen, board, players, player):
+        def action():
+            player.d_cards.remove(self)
+            for i in range(2):
+                print_screen(screen, board, 'Player ' + str(player.number) + ': Place a road', players)
+                player.place_road(board)
+            return [], None
+        return action
 
-class Monopoly(object):
-    label = 'Monopoly'
+class YearOfPlenty(object):
+    label = 'YearOfPlenty'
 
-    def action():
-        print('Playing Monopoly')
+    def make_action(self, screen, board, players, player):
+        def action():
+            player.d_cards.remove(self)
+            for i in range(2):
+                buttons = [
+                        {
+                            'label': consts.ResourceMap[i],
+                            'resource': i,
+                        } for i in range(5)
+                ]
+                print_screen(screen, board, 'Player ' + str(player.number) + ': Pick a Resource', players, buttons)
+                resource = player.pick_option(buttons)['resource']
+                player.hand[resource] += 1
+            return [], None
+
+        return action

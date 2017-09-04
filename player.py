@@ -137,7 +137,7 @@ class Player(object):
                     dist = math.hypot(pos[0] - event.pos[0], pos[1] - event.pos[1])
                     if dist < consts.RESOURCE_RADIUS / 2:
                         tile = board.tiles[num]
-                        if tile.resource and not tile.blocked:
+                        if tile.resource is not None and not tile.blocked:
                             for other_tile in board.tiles:
                                 other_tile.blocked = False
                             tile.blocked = True
