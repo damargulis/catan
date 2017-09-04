@@ -28,9 +28,9 @@ ResourceMap = [
 ]
 
 ResourceColors = {
-        Resource.BRICK: (250,0,0),
+        Resource.BRICK: (128,0,0),
         Resource.LUMBER: (0,51,0),
-        Resource.WOOL: (0,255,0),
+        Resource.WOOL: (153,255,153),
         Resource.GRAIN: (255,204,0),
         Resource.ORE: (102,102,153),
         'desert': (153,102,0),
@@ -286,3 +286,23 @@ Costs = {
         },
 }
 
+Ports = {
+        2: (Resource.LUMBER, 2),
+        3: (Resource.LUMBER, 2),
+        5: ('any', 3),
+        6: ('any', 3),
+        7: (Resource.BRICK, 2),
+        8: (Resource.BRICK, 2),
+        15: (Resource.GRAIN, 2),
+        16: ('any', 3),
+        25: (Resource.GRAIN, 2),
+        27: ('any', 3),
+        36: (Resource.ORE, 2),
+        38: ('any', 3),
+        39: ('any', 3),
+        46: (Resource.ORE, 2),
+        49: (Resource.WOOL, 2),
+        50: (Resource.WOOL, 2),
+        52: ('any', 3),
+        53: ('any', 3),
+}

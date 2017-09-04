@@ -26,6 +26,7 @@ class DesertTile(ResourceTile):
 
 class Board(object):
     def __init__(self):
+        self.ports = self._get_ports()
         self.tiles = self._get_tiles()
         shuffle(self.tiles)
         for i, tile in enumerate(self.tiles):
@@ -42,6 +43,9 @@ class Board(object):
         self.roads = []
         self.d_cards = self._get_d_cards()
         shuffle(self.d_cards)
+
+    def _get_ports(self):
+        return consts.Ports
 
     def _get_tiles(self):
         tiles = []
