@@ -35,7 +35,7 @@ def pick_settlements(players, board):
 
 def give_resources(board, total):
     for num, tile in enumerate(board.tiles):
-        if tile.resource and not tile.blocked and tile.chit == total:
+        if tile.resource is not None and not tile.blocked and tile.chit == total:
             for settlement_number in consts.TileSettlementMap[num]:
                 for settlement in board.settlements:
                     if settlement.number == settlement_number:
@@ -116,12 +116,12 @@ def main():
                             {
                                 'label': 'Player ' + str(player_blocked.number),
                                 'player': player_blocked
-                            }
-                            for player_blocked in players_blocked
+                            } for player_blocked in players_blocked
                     ]
-                    print_screen(screen, board, 'Take a resource from:', players, buttons)
-                    player_chosen = player.pick_option(buttons)
-                    player_chosen['player'].give_random_to(player)
+                    if buttons:
+                        print_screen(screen, board, 'Take a resource from:', players, buttons)
+                        player_chosen = player.pick_option(buttons)
+                        player_chosen['player'].give_random_to(player)
 
             give_resources(board, total)
             buttons = [
@@ -148,9 +148,9 @@ def main():
                  }
         ]
 
-        d_cards = [{'label': card.label, 'action': card.action} for card in player.d_cards if card != 'Point'] 
+        d_cards = [{'label': card.label, 'action': card.make_action(screen, board, players, player)} for card in player.d_cards if card.label != 'Point'] 
         def play_d_card():
-            return d_cards, 'Which Card: '
+            return d_cards + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Which Card: '
         if d_cards:
             buttons.append({
                 'label': 'Play D Card',
