@@ -1,4 +1,5 @@
 import consts
+from draw import print_screen
 import math
 import pygame
 import random
@@ -154,6 +155,29 @@ class Player(object):
         card = random.choice(cards)
         self.hand[card] -= 1
         player.hand[card] += 1
+
+    def make_exchange(self, screen, board, players, resource, amt, first=True):
+        print('here2')
+        def exchange():
+            print('here4')
+            self.hand[resource] += amt
+            if not first:
+                return [], None
+            buttons = [{'label': consts.ResourceMap[r], 'action':  self.make_exchange(screen, board, players, r, 1, first=False)} for r in self.hand]
+            return buttons, 'Trade with: '
+        return exchange
+
+
+    def get_exchanges(self, screen, board, players):
+        print('here1')
+        exchanges = []
+        for resource in self.hand:
+            if self.hand[resource] >= 4:
+                exchanges.append({
+                    'label': consts.ResourceMap[resource] + ' 1:4',
+                    'action': self.make_exchange(screen, board, players, resource, -4)
+                })
+        return exchanges
 
     def __eq__(self, other):
         return self.number == other.number
