@@ -171,6 +171,15 @@ class Player(object):
                 return True
         return False
 
+    def negotiate_trade(self):
+        import pdb; pdb.set_trace()
+
+    def has_trades(self):
+        for resource in self.hand:
+            if self.hand[resource] > 0:
+                return True
+        return False
+
     def get_exchanges(self, screen, board, players):
         exchanges = []
         settlements = [settlement for settlement in board.settlements if settlement.player == self]
