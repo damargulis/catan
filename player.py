@@ -23,9 +23,25 @@ class Player(object):
         self.cities_left = 4
         self.longest_road = 0
         self.knights = 0
+        self.longest_road = False
+        self.largest_army = False
+
+        self.played_d_card = False
+        self.d_card_queue = []
 
     def take_resource(self, resource):
         self.hand[resource] += 1
+
+    def start_turn(self):
+        self.played_d_card = False
+
+    def play_d_card(self, card):
+        self.d_cards.remove(card)
+        self.played_d_card = True
+
+    def end_turn(self):
+        self.d_cards += self.d_card_queue
+        self.d_card_queue = []
 
     def can_afford(self, item):
         for resource in consts.Costs[item]:
@@ -50,7 +66,7 @@ class Player(object):
 
     def pick_d_card(self, board):
         card = board.d_cards.pop()
-        self.d_cards.append(card)
+        self.d_card_queue.append(card)
         return card
 
     def purchase(self, item, board):

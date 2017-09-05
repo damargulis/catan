@@ -99,7 +99,7 @@ def print_player(screen, player):
             'Lumber: ' + str(player.hand[consts.Resource.LUMBER]),
             'Ore: ' + str(player.hand[consts.Resource.ORE]),
             'Wool: ' + str(player.hand[consts.Resource.WOOL]),
-            'Dev Cards: ' + str(len(player.d_cards)),
+            'Dev Cards: ' + str(len(player.d_cards) + len(player.d_card_queue)),
             'Knights: ' + str(player.knights),
     ]
     def print_player_stats(screen, label, position):

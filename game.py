@@ -91,6 +91,7 @@ def main():
             if event.type == pygame.QUIT:
                 sys.exit()
         player = players[player_turn]
+        player.start_turn()
         def get_buttons(total = None):
             buttons = [
                     {
@@ -121,7 +122,7 @@ def main():
                     'action': exchange,
                 })
 
-            if d_cards:
+            if d_cards and not player.played_d_card:
                 buttons.append({
                     'label': 'Play D Card',
                     'action': play_d_card
@@ -179,6 +180,7 @@ def main():
             buttons, label = option['action']()
             if not buttons and label != 'end':
                 buttons, label = get_buttons()
+        player.end_turn()
         player_turn = (player_turn + 1) % 4
         if player_turn == 0:
             first_turn = False
