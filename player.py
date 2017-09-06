@@ -187,8 +187,95 @@ class Player(object):
                 return True
         return False
 
-    def negotiate_trade(self):
-        import pdb; pdb.set_trace()
+    def negotiate_trade(self, screen, board, players):
+        offer = {resource: 0 for resource in self.hand}
+        asking = {resource: 0 for resource in self.hand}
+        def end_turn():
+            def make_end():
+                return True
+            return make_end
+        def add_one(side, resource):
+            def do_action():
+                side[resource] += 1
+                return False
+            return do_action
+        end = False
+        while not end:
+            buttons = []
+            for resource in self.hand:
+                if self.hand[resource] > offer[resource]:
+                    buttons.append({
+                        'label': consts.ResourceMap[resource],
+                        'action': add_one(offer, resource)
+                    })
+            buttons.append({
+                'label': 'Make Offer',
+                'action': end_turn
+            })
+            offer_label = [
+                    consts.ResourceMap[resource] 
+                    + ' ' 
+                    + str(offer[resource]) 
+                    for resource in offer
+            ]
+            label = 'Offer: ' + ' '.join(offer_label)
+            print_screen(screen, board, label, players, buttons)
+            option = self.pick_option(buttons)
+            end = option['action']()
+        end = False
+        while not end:
+            buttons = []
+            for resource in self.hand:
+                    buttons.append({
+                        'label': consts.ResourceMap[resource] + ' ' + str(asking[resource]),
+                        'action': add_one(asking, resource)
+                    })
+            buttons.append({
+                'label': 'Make Offer',
+                'action': end_turn
+            })
+            label = 'For: '
+            print_screen(screen, board, label, players, buttons)
+            option = self.pick_option(buttons)
+            end = option['action']()
+
+        final_offer = {
+                resource: offer[resource] - asking[resource]
+                for resource in self.hand
+        }
+        return final_offer
+
+    def show_offer(self, offer, screen, board, players, from_player):
+        resource_labels = {consts.ResourceMap[resource] +' ' + str(offer[resource]) for resource in offer}
+
+        label = 'Player ' + str(self.number) + ', Offer from Player: ' + str(from_player.number) + ' ' + ' '.join(resource_labels)
+        buttons = [
+            {
+                'label': 'Accept',
+                'choice': True,
+            },
+            {
+                'label': 'Reject',
+                'choice': False,
+            }
+        ]
+        print_screen(screen, board, label, players, buttons)
+        option = self.pick_option(buttons)
+        return option['choice']
+
+    def accept(self, offer, yours):
+        for resource in offer:
+            if yours:
+                self.hand[resource] += offer[resource]
+            else:
+                self.hand[resource] -= offer[resource]
+
+    def can_afford_trade(self, offer):
+        for resource in offer:
+            needed = offer[resource] * -1
+            if self.hand[resource] < needed:
+                return False
+        return True
 
     def has_trades(self):
         for resource in self.hand:

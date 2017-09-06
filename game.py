@@ -118,7 +118,13 @@ def main():
                 return exchanges + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Exhange: '
 
             def trade():
-                return player.negotiate_trade()
+                offer =  player.negotiate_trade(screen, board, players)
+                for p in players:
+                    if not p == player and p.can_afford_trade(offer) and p.show_offer(offer, screen, board, players, player):
+                        p.accept(offer, True)
+                        player.accept(offer, False)
+                        break
+                return [], None
             if player.has_trades():
                 buttons.append({
                     'label': 'Trade',
@@ -175,12 +181,10 @@ def main():
 
             give_resources(board, total)
             return get_buttons(total)
-        buttons = [
-                {
-                    'label': 'Roll Dice',
-                    'action': roll_dice
-                 }
-        ]
+        buttons = [{
+            'label': 'Roll Dice',
+            'action': roll_dice
+         }]
 
         label = 'Player %s\'s Turn' % player.number
         while buttons:
