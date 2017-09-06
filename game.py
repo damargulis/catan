@@ -83,6 +83,11 @@ def get_possible_purchases(player, board, players):
 def end_turn():
     return [], 'end'
 
+def get_winner(players):
+    for player in players:
+        if player.points + len([card for card in player.d_cards if card.label == 'Point']) >= 10:
+            return player
+
 def main():
     board = Board()
     dice = Dice()
@@ -90,7 +95,8 @@ def main():
     player_turn = 0
     pick_settlements(players, board)
     first_turn = True
-    while 1:
+    winner = None
+    while winner is None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -201,6 +207,8 @@ def main():
         player_turn = (player_turn + 1) % 4
         if player_turn == 0:
             first_turn = False
+        winner = get_winner(players)
+    print_screen(screen, board, 'Player ' + winner.number + ' Wins!', players)
 
 if __name__ == '__main__':
     main()
