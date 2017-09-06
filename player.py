@@ -89,6 +89,7 @@ class Player(object):
                                 if road.start == settlement.position or road.end == settlement.position:
                                     board.roads.append(road)
                                     self.roads_left -= 1
+                                    board.check_longest_road()
                                     return
                             else:
                                 roads_owned = [r for r in board.roads if r.color == self.color]
@@ -96,6 +97,7 @@ class Player(object):
                                     if road.start == test_r.start or test_r.end == road.end or road.start == test_r.end or road.end == test_r.start:
                                         board.roads.append(road)
                                         self.roads_left -= 1
+                                        board.check_longest_road()
                                         return
 
     def place_city(self, board):

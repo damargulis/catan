@@ -80,6 +80,10 @@ class Board(object):
                 if settlement.number in consts.TileSettlementMap[tile]
         ]
 
+    def check_longest_road(self):
+        for road in self.roads:
+
+
 class Knight(object):
     label = 'Knight'
 
