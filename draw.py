@@ -57,10 +57,10 @@ def draw_port(screen, port):
             screen,
             consts.WHITE if consts.Ports[port][0] == 'any' else consts.ResourceColors[consts.Ports[port][0]],
             (
-                location[0] - 20,
-                location[1] - 20,
-                40,
-                40,
+                location[0] - consts.PORT_RADIUS,
+                location[1] - consts.PORT_RADIUS,
+                consts.PORT_RADIUS * 2,
+                consts.PORT_RADIUS * 2,
             )
     )
 
@@ -99,7 +99,7 @@ def print_player(screen, player):
             'Lumber: ' + str(player.hand[consts.Resource.LUMBER]),
             'Ore: ' + str(player.hand[consts.Resource.ORE]),
             'Wool: ' + str(player.hand[consts.Resource.WOOL]),
-            'Dev Cards: ' + str(len(player.d_cards)),
+            'Dev Cards: ' + str(len(player.d_cards) + len(player.d_card_queue)),
             'Knights: ' + str(player.knights),
     ]
     def print_player_stats(screen, label, position):

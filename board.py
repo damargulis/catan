@@ -85,7 +85,7 @@ class Knight(object):
 
     def make_action(self, screen, board, players, player):
         def action():
-            player.d_cards.remove(self)
+            player.play_d_card(self)
             print_screen(screen, board, 'Player ' + str(player.number) + ': Pick a settlement to Block', players)
             players_blocked = player.pick_tile_to_block(board)
             buttons = [
@@ -98,6 +98,16 @@ class Knight(object):
                 print_screen(screen, board, 'Take a resource from:', players, buttons)
                 player_chosen = player.pick_option(buttons)
                 player_chosen['player'].give_random_to(player)
+            player.knights += 1
+            if player.knights >= 3 and not self.largest_army:
+                max_other = max([p.knights for p in players])
+                if player.knights > max_other:
+                    for p in players:
+                        if p.largest_army:
+                            p.largest_army = False
+                            p.points -= 2
+                    player.largest_army = True
+                    player.points += 2
             return [], None
         return action
 
@@ -112,7 +122,7 @@ class Monopoly(object):
 
     def make_action(self, screen, board, players, player):
         def action():
-            player.d_cards.remove(self)
+            player.play_d_card(self)
             buttons = [
                     {
                         'label': consts.ResourceMap[i],
@@ -133,7 +143,7 @@ class RoadBuilder(object):
 
     def make_action(self, screen, board, players, player):
         def action():
-            player.d_cards.remove(self)
+            player.play_d_card(self)
             for i in range(2):
                 print_screen(screen, board, 'Player ' + str(player.number) + ': Place a road', players)
                 player.place_road(board)
@@ -145,7 +155,7 @@ class YearOfPlenty(object):
 
     def make_action(self, screen, board, players, player):
         def action():
-            player.d_cards.remove(self)
+            player.play_d_card(self)
             for i in range(2):
                 buttons = [
                         {
@@ -157,5 +167,4 @@ class YearOfPlenty(object):
                 resource = player.pick_option(buttons)['resource']
                 player.hand[resource] += 1
             return [], None
-
         return action
