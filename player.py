@@ -183,7 +183,7 @@ class Player(object):
 
     def has_port(self, ports, resource=None):
         for port in ports:
-            if (resource and port[0] == resource) or (resource is not None and port[0] == 'any'):
+            if (resource and port[0] == resource) or (resource is None and port[0] == 'any'):
                 return True
         return False
 

@@ -167,5 +167,4 @@ class YearOfPlenty(object):
                 resource = player.pick_option(buttons)['resource']
                 player.hand[resource] += 1
             return [], None
-
         return action
