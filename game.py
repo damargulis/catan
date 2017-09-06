@@ -43,6 +43,9 @@ def give_resources(board, total):
                         if settlement.city:
                             settlement.player.take_resource(tile.resource)
 
+def end_section():
+    return [], None
+
 def get_possible_purchases(player, board, players):
     can_afford = []
     for item in consts.Costs:
@@ -72,9 +75,10 @@ def get_possible_purchases(player, board, players):
             })
     can_afford.append({
         'label': 'cancel',
-        'action': end_turn
+        'action': end_section,
     })
     return can_afford
+
 
 def end_turn():
     return [], 'end'
