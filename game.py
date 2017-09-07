@@ -209,7 +209,10 @@ def main():
             first_turn = False
         winner = get_winner(players)
     print_screen(screen, board, 'Player ' + str(winner.number) + ' Wins!', players)
-
+    while True:
+        event = pygame.event.wait()
+        if event.type == pygame.QUIT:
+            sys.exit()
 
 if __name__ == '__main__':
     main()
