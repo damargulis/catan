@@ -62,7 +62,11 @@ class Player(object):
                         return True
             return False
         elif item == 'settlement':
-            pass # TODO: figure this out -- and need a new place_settlement that must be attatched to a current road
+            if self.settlements_left > 0:
+                for settlement in consts.SettlementPositions:
+                    if self.can_place_settlement(board, settlement, False):
+                        return True
+            return False
 
     def pick_d_card(self, board):
         card = board.d_cards.pop()
@@ -84,7 +88,7 @@ class Player(object):
                     if dist < 20:
                         roads = [(road.start, road.end) for road in board.roads ]
                         if pos not in roads:
-                            road = Road(self.color, consts.Roads[num])
+                            road = Road(self, consts.Roads[num])
                             if settlement:
                                 if road.start == settlement.position or road.end == settlement.position:
                                     board.roads.append(road)
@@ -112,7 +116,27 @@ class Player(object):
                             settlement.make_city()
                             return
 
-    def place_settlement(self, board):
+    def can_place_settlement(self, board, settlement_number, first):
+        settlements = [settlement.number for settlement in board.settlements]
+        if settlement_number in settlements:
+            return False
+        numbers = [settlement.number for settlement in board.settlements ]
+        connected_roads = [ road for road in consts.Roads if settlement_number in road ]
+        adj = [ road[0] if road[1] == settlement_number else road[1] for road in connected_roads ]
+        combined = set(adj).intersection(set(numbers))
+        if len(combined) == 0:
+            if first:
+                return True
+            else:
+                pos = consts.SettlementPositions[settlement_number]
+            roads = [ road for road in board.roads if road.player == self ]
+            for road in roads:
+                pos = consts.SettlementPositions[settlement_number]
+                if pos == road.start or pos == road.end:
+                    return True
+        return False
+
+    def place_settlement(self, board, first):
         while True:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
@@ -121,18 +145,12 @@ class Player(object):
                 for num,pos in consts.SettlementPositions.items():
                     dist = math.hypot(pos[0] - event.pos[0], pos[1] - event.pos[1])
                     if dist < 10:
-                        numbers = [settlement.number for settlement in board.settlements ]
-                        if num not in numbers:
-                            connected_roads = [ road for road in consts.Roads if num in road ]
-                            adj = [ road[0] if road[1] == num else road[1] for road in connected_roads ]
-                            combined = set(adj).intersection(set(numbers))
-                            if len(combined) == 0:
-
-                                settlement = Settlement(self, num)
-                                board.settlements.append(settlement)
-                                self.settlements_left -= 1
-                                self.points += 1
-                                return settlement
+                        if self.can_place_settlement(board, num, first):
+                            settlement = Settlement(self, num)
+                            board.settlements.append(settlement)
+                            self.settlements_left -= 1
+                            self.points += 1
+                            return settlement
 
     def pick_option(self, options):
         while True:
@@ -343,7 +361,8 @@ class Settlement(object):
         self.player.points += 1
 
 class Road(object):
-    def __init__(self, color, spots):
-        self.color = color
+    def __init__(self, player, spots):
+        self.color = player.color
+        self.player = player
         self.start = consts.SettlementPositions[spots[0]]
         self.end = consts.SettlementPositions[spots[1]]

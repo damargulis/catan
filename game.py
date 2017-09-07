@@ -17,7 +17,7 @@ def pick_settlements(players, board):
         for i, player in enumerate(players):
             text = 'Player ' + str(player.number) + ': Pick a spot to settle'
             print_screen(screen, board, text, players)
-            settlement = player.place_settlement(board)
+            settlement = player.place_settlement(board, True)
             text = 'Player ' + str(player.number) + ': Place a road'
             print_screen(screen, board, text, players)
             player.place_road(board, settlement)
@@ -58,7 +58,7 @@ def get_possible_purchases(player, board, players):
                         player.place_road(board)
                     elif item == 'settlement':
                         print_screen(screen, board, 'Place your settlement', players)
-                        player.place_settlement(board)
+                        player.place_settlement(board, False)
                     elif item == 'city':
                         print_screen(screen, board, 'Pick a settlement to city', players)
                         player.place_city(board)
