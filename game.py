@@ -208,7 +208,8 @@ def main():
         if player_turn == 0:
             first_turn = False
         winner = get_winner(players)
-    print_screen(screen, board, 'Player ' + winner.number + ' Wins!', players)
+    print_screen(screen, board, 'Player ' + str(winner.number) + ' Wins!', players)
+
 
 if __name__ == '__main__':
     main()
