@@ -17,7 +17,7 @@ def pick_settlements(players, board):
         for i, player in enumerate(players):
             text = 'Player ' + str(player.number) + ': Pick a spot to settle'
             print_screen(screen, board, text, players)
-            settlement = player.place_settlement(board)
+            settlement = player.place_settlement(board, True)
             text = 'Player ' + str(player.number) + ': Place a road'
             print_screen(screen, board, text, players)
             player.place_road(board, settlement)
@@ -43,6 +43,9 @@ def give_resources(board, total):
                         if settlement.city:
                             settlement.player.take_resource(tile.resource)
 
+def end_section():
+    return [], None
+
 def get_possible_purchases(player, board, players):
     can_afford = []
     for item in consts.Costs:
@@ -55,7 +58,7 @@ def get_possible_purchases(player, board, players):
                         player.place_road(board)
                     elif item == 'settlement':
                         print_screen(screen, board, 'Place your settlement', players)
-                        player.place_settlement(board)
+                        player.place_settlement(board, False)
                     elif item == 'city':
                         print_screen(screen, board, 'Pick a settlement to city', players)
                         player.place_city(board)
@@ -72,12 +75,18 @@ def get_possible_purchases(player, board, players):
             })
     can_afford.append({
         'label': 'cancel',
-        'action': end_turn
+        'action': end_section,
     })
     return can_afford
 
+
 def end_turn():
     return [], 'end'
+
+def get_winner(players):
+    for player in players:
+        if player.points + len([card for card in player.d_cards if card.label == 'Point']) >= 10:
+            return player
 
 def main():
     board = Board()
@@ -86,7 +95,8 @@ def main():
     player_turn = 0
     pick_settlements(players, board)
     first_turn = True
-    while 1:
+    winner = None
+    while winner is None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -116,6 +126,21 @@ def main():
             exchanges = player.get_exchanges(screen, board, players)
             def exchange():
                 return exchanges + [{'label': 'cancel', 'action': lambda: ([], None)}], 'Exhange: '
+
+            def trade():
+                offer =  player.negotiate_trade(screen, board, players)
+                for p in players:
+                    if not p == player and p.can_afford_trade(offer) and p.show_offer(offer, screen, board, players, player):
+                        p.accept(offer, True)
+                        player.accept(offer, False)
+                        break
+                return [], None
+            if player.has_trades():
+                buttons.append({
+                    'label': 'Trade',
+                    'action': trade,
+                })
+
             if exchanges:
                 buttons.append({
                     'label': 'Exchange',
@@ -166,12 +191,10 @@ def main():
 
             give_resources(board, total)
             return get_buttons(total)
-        buttons = [
-                {
-                    'label': 'Roll Dice',
-                    'action': roll_dice
-                 }
-        ]
+        buttons = [{
+            'label': 'Roll Dice',
+            'action': roll_dice
+         }]
 
         label = 'Player %s\'s Turn' % player.number
         while buttons:
@@ -184,6 +207,12 @@ def main():
         player_turn = (player_turn + 1) % 4
         if player_turn == 0:
             first_turn = False
+        winner = get_winner(players)
+    print_screen(screen, board, 'Player ' + str(winner.number) + ' Wins!', players)
+    while True:
+        event = pygame.event.wait()
+        if event.type == pygame.QUIT:
+            sys.exit()
 
 if __name__ == '__main__':
     main()

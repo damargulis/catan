@@ -62,7 +62,11 @@ class Player(object):
                         return True
             return False
         elif item == 'settlement':
-            pass # TODO: figure this out -- and need a new place_settlement that must be attatched to a current road
+            if self.settlements_left > 0:
+                for settlement in consts.SettlementPositions:
+                    if self.can_place_settlement(board, settlement, False):
+                        return True
+            return False
 
     def pick_d_card(self, board):
         card = board.d_cards.pop()
@@ -84,7 +88,7 @@ class Player(object):
                     if dist < 20:
                         roads = [(road.start, road.end) for road in board.roads ]
                         if pos not in roads:
-                            road = Road(self.color, consts.Roads[num])
+                            road = Road(self, consts.Roads[num])
                             if settlement:
                                 if road.start == settlement.position or road.end == settlement.position:
                                     board.roads.append(road)
@@ -114,7 +118,27 @@ class Player(object):
                             settlement.make_city()
                             return
 
-    def place_settlement(self, board):
+    def can_place_settlement(self, board, settlement_number, first):
+        settlements = [settlement.number for settlement in board.settlements]
+        if settlement_number in settlements:
+            return False
+        numbers = [settlement.number for settlement in board.settlements ]
+        connected_roads = [ road for road in consts.Roads if settlement_number in road ]
+        adj = [ road[0] if road[1] == settlement_number else road[1] for road in connected_roads ]
+        combined = set(adj).intersection(set(numbers))
+        if len(combined) == 0:
+            if first:
+                return True
+            else:
+                pos = consts.SettlementPositions[settlement_number]
+            roads = [ road for road in board.roads if road.player == self ]
+            for road in roads:
+                pos = consts.SettlementPositions[settlement_number]
+                if pos == road.start or pos == road.end:
+                    return True
+        return False
+
+    def place_settlement(self, board, first):
         while True:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
@@ -123,18 +147,12 @@ class Player(object):
                 for num,pos in consts.SettlementPositions.items():
                     dist = math.hypot(pos[0] - event.pos[0], pos[1] - event.pos[1])
                     if dist < 10:
-                        numbers = [settlement.number for settlement in board.settlements ]
-                        if num not in numbers:
-                            connected_roads = [ road for road in consts.Roads if num in road ]
-                            adj = [ road[0] if road[1] == num else road[1] for road in connected_roads ]
-                            combined = set(adj).intersection(set(numbers))
-                            if len(combined) == 0:
-
-                                settlement = Settlement(self, num)
-                                board.settlements.append(settlement)
-                                self.settlements_left -= 1
-                                self.points += 1
-                                return settlement
+                        if self.can_place_settlement(board, num, first):
+                            settlement = Settlement(self, num)
+                            board.settlements.append(settlement)
+                            self.settlements_left -= 1
+                            self.points += 1
+                            return settlement
 
     def pick_option(self, options):
         while True:
@@ -186,6 +204,102 @@ class Player(object):
     def has_port(self, ports, resource=None):
         for port in ports:
             if (resource and port[0] == resource) or (resource is None and port[0] == 'any'):
+                return True
+        return False
+
+    def negotiate_trade(self, screen, board, players):
+        offer = {resource: 0 for resource in self.hand}
+        asking = {resource: 0 for resource in self.hand}
+        def end_turn():
+            def make_end():
+                return True
+            return make_end
+        def add_one(side, resource):
+            def do_action():
+                side[resource] += 1
+                return False
+            return do_action
+        end = False
+        while not end:
+            buttons = []
+            for resource in self.hand:
+                if self.hand[resource] > offer[resource]:
+                    buttons.append({
+                        'label': consts.ResourceMap[resource],
+                        'action': add_one(offer, resource)
+                    })
+            buttons.append({
+                'label': 'Make Offer',
+                'action': end_turn
+            })
+            offer_label = [
+                    consts.ResourceMap[resource] 
+                    + ' ' 
+                    + str(offer[resource]) 
+                    for resource in offer
+            ]
+            label = 'Offer: ' + ' '.join(offer_label)
+            print_screen(screen, board, label, players, buttons)
+            option = self.pick_option(buttons)
+            end = option['action']()
+        end = False
+        while not end:
+            buttons = []
+            for resource in self.hand:
+                    buttons.append({
+                        'label': consts.ResourceMap[resource] + ' ' + str(asking[resource]),
+                        'action': add_one(asking, resource)
+                    })
+            buttons.append({
+                'label': 'Make Offer',
+                'action': end_turn
+            })
+            label = 'For: '
+            print_screen(screen, board, label, players, buttons)
+            option = self.pick_option(buttons)
+            end = option['action']()
+
+        final_offer = {
+                resource: offer[resource] - asking[resource]
+                for resource in self.hand
+        }
+        return final_offer
+
+    def show_offer(self, offer, screen, board, players, from_player):
+        resource_labels = {consts.ResourceMap[resource] +' ' + str(offer[resource]) for resource in offer}
+
+        label = 'Player ' + str(self.number) + ', Offer from Player: ' + str(from_player.number) + ' ' + ' '.join(resource_labels)
+        buttons = [
+            {
+                'label': 'Accept',
+                'choice': True,
+            },
+            {
+                'label': 'Reject',
+                'choice': False,
+            }
+        ]
+        print_screen(screen, board, label, players, buttons)
+        option = self.pick_option(buttons)
+        return option['choice']
+
+    def accept(self, offer, yours):
+        for resource in offer:
+            if yours:
+                self.hand[resource] += offer[resource]
+            else:
+                self.hand[resource] -= offer[resource]
+
+    def can_afford_trade(self, offer):
+        for resource in offer:
+            needed = offer[resource] * -1
+            if self.hand[resource] < needed:
+                return False
+        return True
+
+    def has_trades(self):
+        for resource in self.hand:
+            if self.hand[resource] > 0:
                 return True
         return False
 
@@ -249,7 +363,8 @@ class Settlement(object):
         self.player.points += 1
 
 class Road(object):
-    def __init__(self, color, spots):
-        self.color = color
+    def __init__(self, player, spots):
+        self.color = player.color
+        self.player = player
         self.start = consts.SettlementPositions[spots[0]]
         self.end = consts.SettlementPositions[spots[1]]

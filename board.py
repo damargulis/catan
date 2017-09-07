@@ -103,8 +103,8 @@ class Knight(object):
                 player_chosen = player.pick_option(buttons)
                 player_chosen['player'].give_random_to(player)
             player.knights += 1
-            if player.knights >= 3 and not self.largest_army:
-                max_other = max([p.knights for p in players])
+            if player.knights >= 3 and not  player.largest_army:
+                max_other = max([p.knights for p in players if p != player])
                 if player.knights > max_other:
                     for p in players:
                         if p.largest_army:
