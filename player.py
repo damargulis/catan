@@ -88,11 +88,13 @@ class Player(object):
                     if dist < 20:
                         roads = [(road.start, road.end) for road in board.roads ]
                         if pos not in roads:
-                            road = Road(self, consts.Roads[num])
+                            road = Road(self, num)
                             if settlement:
                                 if road.start == settlement.position or road.end == settlement.position:
                                     board.roads.append(road)
                                     self.roads_left -= 1
+                                    if self.roads_left <= 15 - 5:
+                                        board.check_longest_road(self)
                                     return
                             else:
                                 roads_owned = [r for r in board.roads if r.color == self.color]
@@ -100,6 +102,8 @@ class Player(object):
                                     if road.start == test_r.start or test_r.end == road.end or road.start == test_r.end or road.end == test_r.start:
                                         board.roads.append(road)
                                         self.roads_left -= 1
+                                        if self.roads_left <= 15 - 5:
+                                            board.check_longest_road(self)
                                         return
 
     def place_city(self, board):
@@ -361,8 +365,10 @@ class Settlement(object):
         self.player.points += 1
 
 class Road(object):
-    def __init__(self, player, spots):
+    def __init__(self, player, num):
+        self.number = num
         self.color = player.color
+        self.spots = consts.Roads[num]
         self.player = player
-        self.start = consts.SettlementPositions[spots[0]]
-        self.end = consts.SettlementPositions[spots[1]]
+        self.start = consts.SettlementPositions[self.spots[0]]
+        self.end = consts.SettlementPositions[self.spots[1]]
