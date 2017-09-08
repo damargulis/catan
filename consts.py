@@ -257,6 +257,20 @@ Roads = [
         (45,53),
 ]
 
+RoadAdjList = {}
+for i,road in enumerate(Roads):
+    RoadAdjList[i] = []
+    for j,r in enumerate(Roads):
+        if i != j:
+            if r[0] == road[1]:
+                RoadAdjList[i].append(r[1])
+            elif r[0] == road[0]:
+                RoadAdjList[i].append(r[1])
+            elif r[1] == road[0]:
+                RoadAdjList[i].append(r[0])
+            elif r[1] == road[1]:
+                RoadAdjList[i].append(r[0])
+
 def get_midpoint(point1, point2):
     return ((point1[0] + point2[0]) * .5, (point1[1] + point2[1]) * .5)
 

@@ -80,9 +80,98 @@ class Board(object):
                 if settlement.number in consts.TileSettlementMap[tile]
         ]
 
-    def check_longest_road(self):
-        for road in self.roads:
+    def make_road_sets(self, player, owned_roads):
+        roads_left = [road for road in owned_roads]
+        sets = []
+        while len(roads_left):
+            seen = set()
+            road = roads_left.pop()
+            seen.add(road.number)
+            stack = [road.spots[0],road.spots[1]]
+            while len(stack) > 0:
+                settlement_num = stack.pop()
+                for r in owned_roads:
+                    if r in roads_left and r.number not in seen and settlement_num in r.spots:
+                        seen.add(r.number)
+                        roads_left.remove(r)
+                        seen.add(r.number)
+                        settlement_one = r.spots[0]
+                        settlement_two  = r.spots[1]
+                        stack += [settlement_one]
+                        stack += [settlement_two]
+            sets.append(seen)
+        return sets
 
+    def dfs(self, road, s, discovered, length, maximum):
+        maximum += 1
+        discovered.add(road)
+        settlements = consts.Roads[road]
+        connected = [
+                r for r in s
+                if consts.Roads[r][0] in settlements
+                or consts.Roads[r][1] in settlements
+        ]
+        for r in connected:
+            if r not in discovered:
+                discovered.add(r)
+                l = self.dfs(r, s, discovered, length + 1, maximum)
+                print('l:', l)
+                if l > maximum:
+                    maximum = l
+        print(maximum)
+        return maximum
+        
+
+    def check(self, s):
+        edge = None
+        for road in s:
+            corners = [item for r in s if r != road for item in consts.Roads[r]]
+            if consts.Roads[road][0] in corners and consts.Roads[road][1] in corners:
+                continue
+            else:
+                edge = road
+                break
+        if not edge:
+            edge = road
+        return self.dfs(edge, s, set(), 1, 0)
+
+    def check_road_length(self, player):
+        owned_roads = [road for road in self.roads if road.player == player]
+        if len(owned_roads) < 5:
+            return 0
+        else:
+            sets = self.make_road_sets(player, owned_roads)
+            to_check = [s for s in sets if len(s) >= 5]
+            if len(to_check):
+                to_return = max([self.check(s) for s in to_check])
+                return to_return
+            else:
+                return 0
+
+    def check_longest_road(self, placing_player):
+        print('checking')
+        players = set([road.player for road in self.roads])
+        player_scores = [self.check_road_length(player) for player in players]
+        best = max(player_scores)
+        best_players = [player for i,player in enumerate(players) if player_scores[i] == best]
+        if len(best_players) > 1:
+            return
+        print('best:')
+        best_player = best_players[0]
+        print(best_player.number)
+        if best_player.longest_road:
+            print('already_has')
+            return
+        else:
+            print('switching')
+            for player in players:
+                if player.longest_road:
+                    print('switched')
+                    player.longest_road = False
+                    player.points -= 2
+            print('giving')
+            best_player.longest_road = True
+            best_player.points += 2
 
 class Knight(object):
     label = 'Knight'
