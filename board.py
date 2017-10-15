@@ -102,38 +102,58 @@ class Board(object):
             sets.append(seen)
         return sets
 
-    def dfs(self, road, s, discovered, length, maximum):
-        maximum += 1
+    def dfs(self, road, s, discovered, next_settlement, length, maximum):
+        print('dfs:')
+        print(road, s, discovered, length, maximum)
         discovered.add(road)
-        settlements = consts.Roads[road]
+        #settlements = consts.Roads[road]
         connected = [
                 r for r in s
-                if consts.Roads[r][0] in settlements
-                or consts.Roads[r][1] in settlements
+                if consts.Roads[r][0] == next_settlement
+                or consts.Roads[r][1] == next_settlement
         ]
+        print('connected: ')
+        print(connected)
         for r in connected:
             if r not in discovered:
                 discovered.add(r)
-                l = self.dfs(r, s, discovered, length + 1, maximum)
+                if consts.Roads[r][0] == next_settlement:
+                    n_settle = consts.Roads[r][1]
+                else:
+                    n_settle = consts.Roads[r][0]
+                l = self.dfs(r, s, discovered, n_settle, length + 1, maximum)
                 print('l:', l)
                 if l > maximum:
                     maximum = l
-        print(maximum)
-        return maximum
+        print('returning max of: ')
+        print(length, maximum)
+        return max(length, maximum)
         
 
     def check(self, s):
-        edge = None
+        edges = []
         for road in s:
             corners = [item for r in s if r != road for item in consts.Roads[r]]
-            if consts.Roads[road][0] in corners and consts.Roads[road][1] in corners:
+            if corners.count(consts.Roads[road][0]) > 0 and corners.count(consts.Roads[road][1]) > 0:
                 continue
             else:
-                edge = road
-                break
-        if not edge:
-            edge = road
-        return self.dfs(edge, s, set(), 1, 0)
+                edges.append(road)
+        if not edges:
+            edges = [road]
+        print('edges:')
+        print(edges)
+        scores = []
+        for e in edges:
+            corners = [item for r in s if r != e for item in consts.Roads[r]]
+            if corners.count(consts.Roads[road][0]) > 1:
+                next_settlement = consts.Roads[road][0]
+            else:
+                next_settlement = consts.Roads[road][1]
+            score = self.dfs(e, s, set(), next_settlement, 1, 0)
+            print(score)
+            #import pdb; pdb.set_trace()
+            scores.append(score)
+        return max(scores)
 
     def check_road_length(self, player):
         owned_roads = [road for road in self.roads if road.player == player]
@@ -153,6 +173,8 @@ class Board(object):
         players = set([road.player for road in self.roads])
         player_scores = [self.check_road_length(player) for player in players]
         best = max(player_scores)
+        if best < 5:
+            return
         best_players = [player for i,player in enumerate(players) if player_scores[i] == best]
         if len(best_players) > 1:
             return
