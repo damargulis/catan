@@ -103,17 +103,12 @@ class Board(object):
         return sets
 
     def dfs(self, road, s, discovered, next_settlement, length, maximum):
-        print('dfs:')
-        print(road, s, discovered, length, maximum)
         discovered.add(road)
-        #settlements = consts.Roads[road]
         connected = [
                 r for r in s
                 if consts.Roads[r][0] == next_settlement
                 or consts.Roads[r][1] == next_settlement
         ]
-        print('connected: ')
-        print(connected)
         for r in connected:
             if r not in discovered:
                 discovered.add(r)
@@ -125,8 +120,6 @@ class Board(object):
                 print('l:', l)
                 if l > maximum:
                     maximum = l
-        print('returning max of: ')
-        print(length, maximum)
         return max(length, maximum)
         
 
@@ -140,8 +133,6 @@ class Board(object):
                 edges.append(road)
         if not edges:
             edges = [road]
-        print('edges:')
-        print(edges)
         scores = []
         for e in edges:
             corners = [item for r in s if r != e for item in consts.Roads[r]]
@@ -150,8 +141,6 @@ class Board(object):
             else:
                 next_settlement = consts.Roads[road][1]
             score = self.dfs(e, s, set(), next_settlement, 1, 0)
-            print(score)
-            #import pdb; pdb.set_trace()
             scores.append(score)
         return max(scores)
 

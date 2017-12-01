@@ -49,7 +49,6 @@ class Player(object):
                 return False
         return True
 
-    #this feels weird here...should be board.can_buy(player) ?
     def can_buy(self, board, item):
         if item == 'd_card':
             return len(board.d_cards) > 0
