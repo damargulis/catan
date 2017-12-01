@@ -190,9 +190,10 @@ class Player(object):
 
     def give_random_to(self, player):
         cards = [ resource for resource in self.hand for x in range(self.hand[resource]) ]
-        card = random.choice(cards)
-        self.hand[card] -= 1
-        player.hand[card] += 1
+        if cards:
+            card = random.choice(cards)
+            self.hand[card] -= 1
+            player.hand[card] += 1
 
     def make_exchange(self, screen, board, players, resource, amt, first=True):
         def exchange():
@@ -340,6 +341,65 @@ class Player(object):
 
     def __hash__(self):
         return hash(self.number)
+
+class ComputerPlayer(Player):
+    def place_settlement(self, board, first):
+        choices = [num for num,pos in consts.SettlementPositions.items() if self.can_place_settlement(board, num, first)]
+        choice = random.choice(choices)
+        settlement = Settlement(self, choice)
+        board.settlements.append(settlement)
+        self.settlements_left -= 1
+        self.points += 1
+        return settlement
+
+    def place_road(self, board, settlement=None):
+        choices = []
+        for num,pos in consts.RoadMidpoints.items():
+            if pos not in [(road.start, road.end) for road in board.roads ]:
+                    road = Road(self, num)
+                    if settlement:
+                        if road.start == settlement.position or road.end == settlement.position:
+                            choices.append(road)
+                    else:
+
+                        roads_owned = [r for r in board.roads if r.color == self.color]
+                        for test_r in roads_owned:
+                            if road.start == test_r.start or test_r.end == road.end or road.start == test_r.end or road.end == test_r.start:
+                                choices.append(road)
+                                break
+
+        road = random.choice(choices)
+        board.roads.append(road)
+        self.roads_left -= 1
+        if self.roads_left <= 15 - 5:
+            board.check_longest_road(self)
+
+    def pick_option(self, options):
+        return random.choice(options)
+
+    def pick_tile_to_block(self, board):
+        choices = []
+        for num, pos in consts.TilePositions.items():
+            tile = board.tiles[num]
+            if tile.resource is not None and not tile.blocked:
+                choices.append(tile)
+
+        tile = random.choice(choices)
+        for other_tile in board.tiles:
+            other_tile.blocked = False
+        tile.blocked = True
+        settlements_blocking = consts.TileSettlementMap[num]
+        players = []
+        for settlement in board.settlements:
+            if settlement.number in settlements_blocking and not settlement.player == self:
+                players.append(settlement.player)
+        players = list(set(players))
+        return sorted(players, key=lambda player: player.number)
+
+    def place_city(self, board):
+        choices = [settlement for settlement in board.settlements if settlement.player == self and settlement.city == False]
+        settlement = random.choice(choices)
+        settlement.make_city()
 
 def is_inside(pos, box):
     if pos[0] < box[0]:

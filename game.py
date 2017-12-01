@@ -3,7 +3,7 @@ import pygame
 from board import Board
 from draw import print_screen
 from dice import Dice
-from player import Player
+from player import Player, ComputerPlayer
 import sys
 
 pygame.init()
@@ -91,7 +91,7 @@ def get_winner(players):
 def main():
     board = Board()
     dice = Dice()
-    players = [ Player(i) for i in range(1,5) ]
+    players = [ ComputerPlayer(i) for i in range(1,5) ]
     player_turn = 0
     pick_settlements(players, board)
     first_turn = True
