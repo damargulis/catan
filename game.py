@@ -1,5 +1,6 @@
 import consts
 import pygame
+import math
 from board import Board
 from draw import print_screen
 from dice import Dice
@@ -91,7 +92,7 @@ def get_winner(players):
 def main():
     board = Board()
     dice = Dice()
-    players = [ ComputerPlayer(i) for i in range(1,5) ]
+    players = [ Player(1) ] + [ ComputerPlayer(i) for i in range(2,5) ]
     player_turn = 0
     pick_settlements(players, board)
     first_turn = True
@@ -165,16 +166,19 @@ def main():
                         total = sum(dice.roll())
                 else:
                     for p in players:
-                        while sum([p.hand[resource] for resource in p.hand]) > 7:
-                            resources = [resource for resource in p.hand if p.hand[resource]]
-                            resources = list(set(resources))
-                            buttons = [{
-                                    'resource': resource,
-                                    'label': consts.ResourceMap[resource],
-                            } for resource in resources]
-                            options = print_screen(screen, board, 'Player ' + str(p.number) + ' Pick a resource to give away', players, buttons)
-                            resource_chosen = player.pick_option(buttons)
-                            p.hand[resource_chosen['resource']] -= 1
+                        if sum([p.hand[resource] for resource in p.hand]) > 7:
+                            original = sum([p.hand[resource] for resource in p.hand])
+                            needed_left = math.ceil(original / 2)
+                            while sum([p.hand[resource] for resource in p.hand]) > needed_left:
+                                resources = [resource for resource in p.hand if p.hand[resource]]
+                                resources = list(set(resources))
+                                buttons = [{
+                                        'resource': resource,
+                                        'label': consts.ResourceMap[resource],
+                                } for resource in resources]
+                                options = print_screen(screen, board, 'Player ' + str(p.number) + ' Pick a resource to give away', players, buttons)
+                                resource_chosen = p.pick_option(buttons)
+                                p.hand[resource_chosen['resource']] -= 1
 
                     print_screen(screen, board, 'Player ' + str(player.number) + ' rolled a 7. Pick a settlement to Block', players)
                     players_blocked = player.pick_tile_to_block(board)
